@@ -56,6 +56,16 @@
             justify-content: center;
         }
         
+        .avatar {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #e0e7ff;
+            margin: 0 auto 20px;
+            display: block;
+        }
+        
         .avatar-placeholder {
             width: 180px;
             height: 180px;
@@ -286,7 +296,8 @@
     <div class="container">
         <!-- 个人信息卡片 -->
         <div class="card profile-card">
-            <div class="avatar-placeholder">
+            <img src="b_0e65bb8d648a1253345a0c83731d4d28.jpg" alt="吴思远" class="avatar" onerror="this.style.display='none'; document.getElementById('avatar-placeholder').style.display='flex';">
+            <div id="avatar-placeholder" class="avatar-placeholder" style="display: none;">
                 <span>吴</span>
             </div>
             <h1 class="name">吴思远</h1>
