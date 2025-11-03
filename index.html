@@ -108,7 +108,7 @@
         }
         
         .info-label {
-            width: 100px;
+            width: 120px;
             color: #718096;
             font-weight: 500;
         }
@@ -169,6 +169,86 @@
             margin-top: 15px;
             color: #718096;
         }
+        
+        .bank-card {
+            background: linear-gradient(135deg, #4364F7 0%, #6FB1FC 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 15px;
+            box-shadow: 0 5px 15px rgba(67, 100, 247, 0.3);
+        }
+        
+        .bank-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .bank-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .bank-logo {
+            font-size: 24px;
+        }
+        
+        .card-number {
+            font-size: 20px;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            font-family: monospace;
+        }
+        
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .school-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+        }
+        
+        .school-icon {
+            color: #4c6ef5;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -184,6 +264,11 @@
             <div class="birthday">
                 <span>🎂</span>
                 <span>2012年5月4日</span>
+            </div>
+            
+            <div class="school-info">
+                <span class="school-icon">🏫</span>
+                <span>莆田中山中学绶溪校区</span>
             </div>
             
             <div class="contact-icons">
@@ -214,6 +299,11 @@
             </div>
             
             <div class="info-item">
+                <div class="info-label">学校</div>
+                <div class="info-value">莆田中山中学绶溪校区</div>
+            </div>
+            
+            <div class="info-item">
                 <div class="info-label">手机号</div>
                 <div class="info-value">15160487503</div>
             </div>
@@ -241,13 +331,31 @@
                 <div class="hobby">骑自行车</div>
                 <div class="hobby">编程</div>
             </div>
+            
+            <h2 class="section-title">打赏支持</h2>
+            
+            <div class="bank-card">
+                <div class="bank-header">
+                    <div class="bank-name">交通银行</div>
+                    <div class="bank-logo">🏦</div>
+                </div>
+                <div class="card-number">6222 6235 3000 2752 092</div>
+                <button class="copy-btn" id="copyBankNumber">
+                    <span>📋</span>
+                    <span>复制卡号</span>
+                </button>
+            </div>
         </div>
     </div>
+    
+    <div class="toast" id="toast">银行卡号已复制到剪贴板</div>
 
     <script>
         // 简单的交互效果
         document.addEventListener('DOMContentLoaded', function() {
             const contactIcons = document.querySelectorAll('.contact-icon');
+            const copyBtn = document.getElementById('copyBankNumber');
+            const toast = document.getElementById('toast');
             
             contactIcons.forEach(icon => {
                 icon.addEventListener('click', function() {
@@ -270,6 +378,34 @@
                     }
                     
                     alert(message);
+                });
+            });
+            
+            // 复制银行卡号功能
+            copyBtn.addEventListener('click', function() {
+                const bankNumber = '6222623530002752092';
+                
+                // 使用现代剪贴板API
+                navigator.clipboard.writeText(bankNumber).then(() => {
+                    // 显示提示信息
+                    toast.classList.add('show');
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                    }, 2000);
+                }).catch(err => {
+                    // 备用方法
+                    const textArea = document.createElement('textarea');
+                    textArea.value = bankNumber;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    
+                    // 显示提示信息
+                    toast.classList.add('show');
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                    }, 2000);
                 });
             });
         });
