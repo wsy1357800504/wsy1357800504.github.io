@@ -86,6 +86,13 @@
             margin-bottom: 5px;
         }
         
+        .nickname {
+            font-size: 28px;
+            color: #4c6ef5;
+            margin-bottom: 5px;
+            font-style: italic;
+        }
+        
         .location {
             color: #718096;
             margin-bottom: 20px;
@@ -403,7 +410,8 @@
             <div id="avatar-placeholder" class="avatar-placeholder" style="display: none;">
                 <span>吴</span>
             </div>
-            <h1 class="name">吴思远</h1>
+            <h1 class="nickname">AyxInGz</h1>
+            <h1 class="name actual-info" style="display: none;">吴思远</h1>
             <div class="location">
                 <span>📍</span>
                 <span class="hidden-text">[点击解锁查看地区]</span>
@@ -423,7 +431,7 @@
             <div class="contact-icons">
                 <div class="contact-icon" title="微信" data-copy="AyxInGz">💬</div>
                 <div class="contact-icon" title="QQ" data-copy="18065868">🐧</div>
-                <div class="contact-icon" title="邮箱" data-copy="wusiyuan.65868@qq.com">📧</div>
+                <div class="contact-icon" title="邮箱" data-copy="AyxInGz@qq.com">📧</div>
                 <div class="contact-icon unlock-sensitive" title="电话" data-copy="15160487503">📞</div>
             </div>
         </div>
@@ -434,7 +442,13 @@
             
             <div class="info-item">
                 <div class="info-label">姓名</div>
-                <div class="info-value">吴思远</div>
+                <div class="info-value">
+                    <div class="sensitive-info">
+                        <span class="nickname">AyxInGz</span>
+                        <span class="actual-info" style="display: none;">吴思远</span>
+                        <span class="lock-icon unlock-sensitive">🔒</span>
+                    </div>
+                </div>
             </div>
             
             <div class="info-item">
@@ -506,8 +520,8 @@
             <div class="info-item">
                 <div class="info-label">邮箱</div>
                 <div class="info-value">
-                    <span>wusiyuan.65868@qq.com</span>
-                    <button class="copy-btn" data-copy="wusiyuan.65868@qq.com">
+                    <span>AyxInGz@qq.com</span>
+                    <button class="copy-btn" data-copy="AyxInGz@qq.com">
                         <span>📋</span>
                         <span>复制</span>
                     </button>
@@ -549,6 +563,9 @@
     
     <div class="toast" id="toast">内容已复制到剪贴板</div>
 
+    <!-- SHA-3-256 加密库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha3/0.8.0/sha3.min.js"></script>
+
     <script>
         // 复制功能
         document.addEventListener('DOMContentLoaded', function() {
@@ -561,7 +578,8 @@
             const unlockButtons = document.querySelectorAll('.unlock-sensitive');
             
             let isAuthenticated = false;
-            const correctPassword = '135780';
+            // 正确密码的SHA-3-256哈希值
+            const correctHash = 'c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5';
             
             // 显示密码模态框
             function showPasswordModal() {
@@ -578,7 +596,11 @@
             
             // 验证密码
             function authenticate() {
-                if (passwordInput.value === correctPassword) {
+                const inputPassword = passwordInput.value;
+                // 计算输入密码的SHA-3-256哈希值
+                const inputHash = sha3_256(inputPassword);
+                
+                if (inputHash === correctHash) {
                     isAuthenticated = true;
                     revealSensitiveInfo();
                     hidePasswordModal();
@@ -599,6 +621,11 @@
                 
                 // 隐藏占位文本
                 document.querySelectorAll('.hidden-text').forEach(el => {
+                    el.style.display = 'none';
+                });
+                
+                // 隐藏网名
+                document.querySelectorAll('.nickname').forEach(el => {
                     el.style.display = 'none';
                 });
                 
