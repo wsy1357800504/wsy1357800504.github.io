@@ -97,6 +97,7 @@
         
         .info-card {
             padding: 30px;
+            position: relative;
         }
         
         .section-title {
@@ -136,6 +137,32 @@
             display: flex;
             align-items: center;
             gap: 10px;
+        }
+        
+        .sensitive-info {
+            background: #f7fafc;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+        
+        .lock-icon {
+            color: #a0aec0;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .lock-icon:hover {
+            color: #4c6ef5;
+        }
+        
+        .hidden-text {
+            color: #cbd5e0;
+            font-style: italic;
         }
         
         .copy-btn {
@@ -290,6 +317,82 @@
         .toast.show {
             opacity: 1;
         }
+        
+        .password-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .password-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .password-form {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 400px;
+        }
+        
+        .password-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #2d3748;
+            text-align: center;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .password-input:focus {
+            outline: none;
+            border-color: #4c6ef5;
+        }
+        
+        .password-btn {
+            width: 100%;
+            padding: 12px;
+            background: #4c6ef5;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .password-btn:hover {
+            background: #3b5bdb;
+        }
+        
+        .password-error {
+            color: #e53e3e;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -303,11 +406,13 @@
             <h1 class="name">吴思远</h1>
             <div class="location">
                 <span>📍</span>
-                <span>福建莆田</span>
+                <span class="hidden-text">[点击解锁查看地区]</span>
+                <span class="actual-info" style="display: none;">福建莆田</span>
             </div>
             <div class="birthday">
                 <span>🎂</span>
-                <span>2012年5月4日</span>
+                <span class="hidden-text">[点击解锁查看生日]</span>
+                <span class="actual-info" style="display: none;">2012年5月4日</span>
             </div>
             
             <div class="school-info">
@@ -319,7 +424,7 @@
                 <div class="contact-icon" title="微信" data-copy="AyxInGz">💬</div>
                 <div class="contact-icon" title="QQ" data-copy="18065868">🐧</div>
                 <div class="contact-icon" title="邮箱" data-copy="wusiyuan.65868@qq.com">📧</div>
-                <div class="contact-icon" title="电话" data-copy="15160487503">📞</div>
+                <div class="contact-icon unlock-sensitive" title="电话" data-copy="15160487503">📞</div>
             </div>
         </div>
         
@@ -334,12 +439,24 @@
             
             <div class="info-item">
                 <div class="info-label">出生日期</div>
-                <div class="info-value">2012年5月4日</div>
+                <div class="info-value">
+                    <div class="sensitive-info">
+                        <span class="hidden-text">[点击解锁查看]</span>
+                        <span class="actual-info" style="display: none;">2012年5月4日</span>
+                        <span class="lock-icon unlock-sensitive">🔒</span>
+                    </div>
+                </div>
             </div>
             
             <div class="info-item">
                 <div class="info-label">地区</div>
-                <div class="info-value">福建莆田</div>
+                <div class="info-value">
+                    <div class="sensitive-info">
+                        <span class="hidden-text">[点击解锁查看]</span>
+                        <span class="actual-info" style="display: none;">福建莆田</span>
+                        <span class="lock-icon unlock-sensitive">🔒</span>
+                    </div>
+                </div>
             </div>
             
             <div class="info-item">
@@ -352,8 +469,12 @@
             <div class="info-item">
                 <div class="info-label">手机号</div>
                 <div class="info-value">
-                    <span>15160487503</span>
-                    <button class="copy-btn" data-copy="15160487503">
+                    <div class="sensitive-info">
+                        <span class="hidden-text">[点击解锁查看]</span>
+                        <span class="actual-info" style="display: none;">15160487503</span>
+                        <span class="lock-icon unlock-sensitive">🔒</span>
+                    </div>
+                    <button class="copy-btn copy-sensitive" data-copy="15160487503" style="display: none;">
                         <span>📋</span>
                         <span>复制</span>
                     </button>
@@ -416,6 +537,16 @@
         </div>
     </div>
     
+    <!-- 密码验证模态框 -->
+    <div class="password-modal" id="passwordModal">
+        <div class="password-form">
+            <h3 class="password-title">请输入密码查看隐私信息</h3>
+            <input type="password" class="password-input" id="passwordInput" placeholder="请输入密码">
+            <button class="password-btn" id="passwordSubmit">验证</button>
+            <div class="password-error" id="passwordError">密码错误，请重新输入</div>
+        </div>
+    </div>
+    
     <div class="toast" id="toast">内容已复制到剪贴板</div>
 
     <script>
@@ -423,6 +554,65 @@
         document.addEventListener('DOMContentLoaded', function() {
             const copyButtons = document.querySelectorAll('.copy-btn, .bank-copy-btn, .contact-icon');
             const toast = document.getElementById('toast');
+            const passwordModal = document.getElementById('passwordModal');
+            const passwordInput = document.getElementById('passwordInput');
+            const passwordSubmit = document.getElementById('passwordSubmit');
+            const passwordError = document.getElementById('passwordError');
+            const unlockButtons = document.querySelectorAll('.unlock-sensitive');
+            
+            let isAuthenticated = false;
+            const correctPassword = '135780';
+            
+            // 显示密码模态框
+            function showPasswordModal() {
+                passwordModal.classList.add('active');
+                passwordInput.focus();
+            }
+            
+            // 隐藏密码模态框
+            function hidePasswordModal() {
+                passwordModal.classList.remove('active');
+                passwordInput.value = '';
+                passwordError.style.display = 'none';
+            }
+            
+            // 验证密码
+            function authenticate() {
+                if (passwordInput.value === correctPassword) {
+                    isAuthenticated = true;
+                    revealSensitiveInfo();
+                    hidePasswordModal();
+                    showToast('验证成功，隐私信息已解锁');
+                } else {
+                    passwordError.style.display = 'block';
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
+            }
+            
+            // 显示敏感信息
+            function revealSensitiveInfo() {
+                // 显示实际信息
+                document.querySelectorAll('.actual-info').forEach(el => {
+                    el.style.display = 'inline';
+                });
+                
+                // 隐藏占位文本
+                document.querySelectorAll('.hidden-text').forEach(el => {
+                    el.style.display = 'none';
+                });
+                
+                // 显示复制按钮
+                document.querySelectorAll('.copy-sensitive').forEach(el => {
+                    el.style.display = 'flex';
+                });
+                
+                // 更新锁图标为解锁状态
+                document.querySelectorAll('.lock-icon').forEach(el => {
+                    el.textContent = '🔓';
+                    el.style.color = '#48bb78';
+                });
+            }
             
             // 统一的复制函数
             function copyToClipboard(text, message) {
@@ -449,9 +639,41 @@
                 }, 2000);
             }
             
+            // 为解锁按钮添加事件
+            unlockButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    if (!isAuthenticated) {
+                        showPasswordModal();
+                    }
+                });
+            });
+            
+            // 密码提交事件
+            passwordSubmit.addEventListener('click', authenticate);
+            
+            // 按Enter键提交密码
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    authenticate();
+                }
+            });
+            
+            // 点击模态框背景关闭
+            passwordModal.addEventListener('click', function(e) {
+                if (e.target === passwordModal) {
+                    hidePasswordModal();
+                }
+            });
+            
             // 为所有复制按钮添加事件
             copyButtons.forEach(button => {
                 button.addEventListener('click', function() {
+                    // 如果是敏感信息且未验证，显示密码框
+                    if (this.classList.contains('unlock-sensitive') && !isAuthenticated) {
+                        showPasswordModal();
+                        return;
+                    }
+                    
                     const textToCopy = this.getAttribute('data-copy');
                     const title = this.getAttribute('title');
                     
